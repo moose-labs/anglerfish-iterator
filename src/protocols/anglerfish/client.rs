@@ -3,7 +3,7 @@ use serde_json::Value;
 use sui_sdk::{
     SuiClient,
     types::{
-        TypeTag, base_types::ObjectID, dynamic_field::DynamicFieldName,
+        TypeTag, base_types::ObjectID, digests::TransactionDigest, dynamic_field::DynamicFieldName,
         programmable_transaction_builder::ProgrammableTransactionBuilder,
     },
     wallet_context::WalletContext,
@@ -101,48 +101,37 @@ impl AnglerfishClient {
 
     // Execute Anglerfish functions
 
-    pub async fn execute_next_entry(&self) -> Result<()> {
+    pub async fn execute_next_entry(&self) -> Result<TransactionDigest> {
         let mut ptb = ProgrammableTransactionBuilder::new();
         self.build_next_entry(&mut ptb).await?;
-        self.execute(ptb.finish()).await?;
-        Ok(())
+        Ok(self.execute(ptb.finish()).await?)
     }
 
-    pub async fn execute_draw(&self) -> Result<()> {
+    pub async fn execute_draw(&self) -> Result<TransactionDigest> {
         let phase_info = self.get_phase_info().await?;
         let round_registry = self.get_round_registry().await?;
         let round = self
             .get_round_obj_id_from_table(round_registry.rounds.id, phase_info.current_round_number)
             .await?;
-
-        println!("Round Registry ID: {:?}", round_registry);
-        println!("Round ID: {:?}", round);
-
         let mut ptb = ProgrammableTransactionBuilder::new();
         self.build_draw(&mut ptb, round).await?;
-        self.execute(ptb.finish()).await?;
-        Ok(())
+        Ok(self.execute(ptb.finish()).await?)
     }
 
-    pub async fn execute_distribute(&self) -> Result<()> {
+    pub async fn execute_distribute(&self) -> Result<TransactionDigest> {
         let phase_info = self.get_phase_info().await?;
         let round_registry = self.get_round_registry().await?;
         let round = self
             .get_round_obj_id_from_table(round_registry.rounds.id, phase_info.current_round_number)
             .await?;
-
-        println!("Round Registry ID: {:?}", round_registry);
-        println!("Round ID: {:?}", round);
         let mut ptb = ProgrammableTransactionBuilder::new();
         self.build_distribute(&mut ptb, round).await?;
-        self.execute(ptb.finish()).await?;
-        Ok(())
+        Ok(self.execute(ptb.finish()).await?)
     }
 
-    pub async fn execute_start_new_round(&self) -> Result<()> {
+    pub async fn execute_start_new_round(&self) -> Result<TransactionDigest> {
         let mut ptb = ProgrammableTransactionBuilder::new();
         self.build_start_new_round(&mut ptb).await?;
-        self.execute(ptb.finish()).await?;
-        Ok(())
+        Ok(self.execute(ptb.finish()).await?)
     }
 }

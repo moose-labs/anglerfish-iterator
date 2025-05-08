@@ -22,7 +22,7 @@ async fn main() -> Result<()> {
 
     // Coin type of the underlying pool coin
     let pool_coin_type =
-        "0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC"
+        "0xc51004215439bd6a6acd47e5fd128b264203cba1059afd5374341e5d850326fc::usdc::USDC"
             .to_string();
 
     // Instantiate the Anglerfish client
@@ -57,7 +57,9 @@ async fn main() -> Result<()> {
                         Err(e) => {
                             println!("Error executing next entry: {}", e);
                         }
-                        _ => {}
+                        Ok(digest) => {
+                            println!("Next entry transaction digest: {}", digest);
+                        }
                     }
                 } else {
                     let remaining_time = expected_end_at - current_timestamp_ms;
@@ -77,7 +79,9 @@ async fn main() -> Result<()> {
                         Err(e) => {
                             println!("Error executing next entry: {}", e);
                         }
-                        _ => {}
+                        Ok(digest) => {
+                            println!("Next entry transaction digest: {}", digest);
+                        }
                     }
                 } else {
                     let remaining_time = expected_end_at - current_timestamp_ms;
@@ -94,7 +98,9 @@ async fn main() -> Result<()> {
                     Err(e) => {
                         println!("Error drawing: {}", e);
                     }
-                    _ => {}
+                    Ok(digest) => {
+                        println!("Drawing transaction digest: {}", digest);
+                    }
                 }
             }
             Phase::Distributing => {
@@ -104,7 +110,9 @@ async fn main() -> Result<()> {
                     Err(e) => {
                         println!("Error distributing: {}", e);
                     }
-                    _ => {}
+                    Ok(digest) => {
+                        println!("Distributing transaction digest: {}", digest);
+                    }
                 }
             }
             Phase::Settling => {
@@ -114,7 +122,9 @@ async fn main() -> Result<()> {
                     Err(e) => {
                         println!("Error starting new round: {}", e);
                     }
-                    _ => {}
+                    Ok(digest) => {
+                        println!("Starting new round transaction digest: {}", digest);
+                    }
                 }
             }
         }
