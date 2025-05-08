@@ -1,5 +1,7 @@
+use std::path::PathBuf;
 use std::time::SystemTime;
 
+use anglerfish_iterator_rs::config::load_config;
 use anglerfish_iterator_rs::helper::duration::duration_ms_to_minutes;
 use anglerfish_iterator_rs::protocols::anglerfish::client::AnglerfishClient;
 use anyhow::Result;
@@ -15,25 +17,16 @@ use tokio::time::sleep;
 async fn main() -> Result<()> {
     let wallet = retrieve_wallet()?;
 
-    // Object ID of the iterator capability object owned by the above wallet
-    // TODO: fetch & filter iterator cap in owned objects instead specific ID
-    let iterator_cap_id =
-        "0xb1d079bb4b76d5bfadd49c94ff8b5e6e66eb60cc2a7c68b4e832938298c06325".to_string();
-
-    // Coin type of the underlying pool coin
-    let pool_coin_type =
-        "0xc51004215439bd6a6acd47e5fd128b264203cba1059afd5374341e5d850326fc::usdc::USDC"
-            .to_string();
+    // Load the configuration file
+    let config = load_config(PathBuf::from("anglerfish_iterator_config.toml"))?;
 
     // Instantiate the Anglerfish client
     let sui_client = SuiClientBuilder::default().build_testnet().await?;
-    let anglerfish_client =
-        AnglerfishClient::new(sui_client, wallet, iterator_cap_id, pool_coin_type);
+    let anglerfish_client = AnglerfishClient::new(sui_client, wallet, config);
 
     loop {
         let phase_info = anglerfish_client.get_phase_info().await;
         if phase_info.is_err() {
-            println!("Error fetching phase info: {}", phase_info.err().unwrap());
             sleep(std::time::Duration::from_secs(30)).await;
             continue;
         }
@@ -44,9 +37,7 @@ async fn main() -> Result<()> {
 
         let current_phase = phase_info.current_phase.clone();
         match current_phase {
-            Phase::Uninitialized => {
-                println!("Uninitialized, waiting for initialization...");
-            }
+            Phase::Uninitialized => {}
             Phase::LiquidityProviding => {
                 let expected_end_at =
                     phase_info.current_phase_at + phase_info.durations.liquidity_providing_duration;

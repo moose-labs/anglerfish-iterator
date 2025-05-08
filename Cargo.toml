@@ -12,4 +12,4 @@ anyhow = "1.0"
 async-trait = "0.1.88"
 serde = { version = "1.0.144", features = ["derive"] }
 serde_json = { version = "1.0.95", features = ["preserve_order"] }
-# derive_more = "0.99.17"
+toml = "0.8.22"

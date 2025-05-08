@@ -9,7 +9,10 @@ use sui_sdk::{
     wallet_context::WalletContext,
 };
 
-use crate::helper::sui::SuiObjectBuilder;
+use crate::{
+    config::{self, Config},
+    helper::sui::SuiObjectBuilder,
+};
 
 use super::{
     ids,
@@ -21,22 +24,15 @@ use super::{
 pub struct AnglerfishClient {
     sui_client: SuiClient,
     wallet: WalletContext,
-    pool_coin_type: String,
-    iterator_cap_id: String,
+    config: Config,
 }
 
 impl AnglerfishClient {
-    pub fn new(
-        sui_client: SuiClient,
-        wallet: WalletContext,
-        iterator_cap_id: String,
-        pool_coin_type: String,
-    ) -> Self {
+    pub fn new(sui_client: SuiClient, wallet: WalletContext, config: Config) -> Self {
         AnglerfishClient {
             sui_client,
             wallet,
-            iterator_cap_id,
-            pool_coin_type,
+            config,
         }
     }
 
@@ -48,12 +44,20 @@ impl AnglerfishClient {
         &self.wallet
     }
 
+    pub fn config(&self) -> &Config {
+        &self.config
+    }
+
+    pub fn objects(&self) -> &config::Objects {
+        &self.config().objects
+    }
+
     pub fn pool_coin_type(&self) -> String {
-        self.pool_coin_type.clone()
+        self.config().pool.coin_type.to_owned()
     }
 
     pub fn iterator_cap_id(&self) -> String {
-        self.iterator_cap_id.clone()
+        self.config().iterator.cap_id.to_owned()
     }
 
     /// Fetch the Anglerfish objects
