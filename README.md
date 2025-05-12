@@ -57,4 +57,8 @@ The application will continuously fetch the current phase, wait for its completi
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under a custom license.  
+**Usage Restrictions:**
+
+- You are free to read and study the code.
+- Commercial usage or use in competitive projects is **strictly prohibited** without prior written permission from the project owner.
