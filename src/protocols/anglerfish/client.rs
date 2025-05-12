@@ -118,7 +118,7 @@ impl AnglerfishClient {
             .get_round_obj_id_from_table(round_registry.rounds.id, phase_info.current_round_number)
             .await?;
         let mut ptb = ProgrammableTransactionBuilder::new();
-        self.build_draw(&mut ptb, round).await?;
+        self.build_draw(&mut ptb, &round).await?;
         Ok(self.execute(ptb.finish()).await?)
     }
 
@@ -129,7 +129,7 @@ impl AnglerfishClient {
             .get_round_obj_id_from_table(round_registry.rounds.id, phase_info.current_round_number)
             .await?;
         let mut ptb = ProgrammableTransactionBuilder::new();
-        self.build_distribute(&mut ptb, round).await?;
+        self.build_distribute(&mut ptb, &round).await?;
         Ok(self.execute(ptb.finish()).await?)
     }
 

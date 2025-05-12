@@ -18,12 +18,12 @@ pub trait AnglerfishProgramableTransaction {
     async fn build_draw(
         &self,
         ptb: &mut ProgrammableTransactionBuilder,
-        round: Round,
+        round: &Round,
     ) -> Result<()>;
     async fn build_distribute(
         &self,
         ptb: &mut ProgrammableTransactionBuilder,
-        round: Round,
+        round: &Round,
     ) -> Result<()>;
 }
 
@@ -89,7 +89,7 @@ impl AnglerfishProgramableTransaction for AnglerfishClient {
     async fn build_draw(
         &self,
         ptb: &mut ProgrammableTransactionBuilder,
-        round: Round,
+        round: &Round,
     ) -> Result<()> {
         let sui_client = self.sui_client();
         let iter_cap_id = self.iterator_cap_id();
@@ -146,7 +146,7 @@ impl AnglerfishProgramableTransaction for AnglerfishClient {
     async fn build_distribute(
         &self,
         ptb: &mut ProgrammableTransactionBuilder,
-        round: Round,
+        round: &Round,
     ) -> Result<()> {
         let sui_client = self.sui_client();
         let iter_cap_id = self.iterator_cap_id();
